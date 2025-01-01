@@ -50,6 +50,9 @@ table_access = os.environ.get("table_access")
 admin_access = admin_access.replace(" ", ",").split(",")
 table_access = table_access.replace(" ", ",").split(",")
 
+print(admin_access)
+print(table_access)
+
 with open(client_secrets_file, 'r') as file:
     secrets = json.load(file)
     
