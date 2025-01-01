@@ -38,7 +38,7 @@ os.environ['NO_PROXY'] = 'oauth2.googleapis.com'
 flow = Flow.from_client_secrets_file(
     client_secrets_file=client_secrets_file,
     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri='https://sciventory.onrender.com//callback'
+    redirect_uri='https://sciventory.onrender.com/callback'
 )     
 
 CSV_FILE = 'data/data.csv'
