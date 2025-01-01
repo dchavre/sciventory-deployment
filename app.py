@@ -50,6 +50,13 @@ table_access = os.environ.get("table_access")
 admin_access = admin_access.replace(" ", ",").split(",")
 table_access = table_access.replace(" ", ",").split(",")
 
+with open(client_secrets_file, 'r') as file:
+    secrets = json.load(file)
+    
+GOOGLE_CLIENT_ID = secrets['web']['client_id']
+app.secret_key = secrets['web']['client_secret']
+
+
 # Load data from the CSV file
 def load_csv(file):
     try:
