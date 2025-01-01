@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+  <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+>
+</head>
+
+<body>
+    <nav>
+        <ul>
+          <li id="title-name"><a href="/">Sciventory</a></li>
+        </ul>
+        <ul>
+          <li><a href="https://drive.google.com/file/d/1einrizio-tWR6cLVym4cruS_IJGCuvHG/view?usp=sharing" class="secondary nav-button">Chemical Hygiene Plan</a></li>
+          <li class="dropdown">
+            <div class="dropdown-button">
+              Account
+            </div>
+            <ul>
+              <li><a href="/table">View Inventory</a></li>
+              <li><a href="/room-view">View Room Checks</a></li>
+              <li><a href="/admin">Inventory (Admin)</a></li>
+              <li><a href="/room-table">Room Checks (Admin)</a></li>
+              <li><a href="/logout">Sign Out</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+
+<input type="text" id="search" placeholder="Type to search" style="width: 50%; margin-left: 5%; margin-top: 35px;">
+<table id="data-table">
+    <thead>
+        <tr>
+            <th>Room</th>
+            <th>Chemical</th>
+            <th>Quantity</th>
+            <th>Storage Code</th>
+            <th>Pictograms</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+        <tr>
+            <!-- Room -->
+            <td contenteditable="false">{{ row[0] }}</td>
+
+            <!-- Chemical with SDS Link -->
+            <td contenteditable="false">
+                {% set chemical_name = row[1] %}
+                {% if chemical_name in sds_links %}
+                    <a href="{{ sds_links[chemical_name][0] }}" target="_blank">
+                        {{ chemical_name }}
+                    </a>
+                {% else %}
+                    {{ chemical_name }}
+                {% endif %}
+            </td>
+
+            <!-- Quantity -->
+            <td contenteditable="false">{{ row[2] }}</td>
+
+            <!-- Storage Code -->
+            <td contenteditable="false">{{ row[3] }}</td>
+
+            <!-- Pictograms -->
+            <td>
+                {% if chemical_name in ghs_data and ghs_data[chemical_name] %}
+                    {% if ghs_data[chemical_name] %}
+                        {% for pictogram in ghs_data[chemical_name] %}
+                            <img src="static/img/{{ pictogram }}" alt="{{ pictogram }}" style="width:50px; height:50px;">
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // Ensure the script runs only after the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search');
+        const tableRows = document.querySelectorAll('#data-table tbody tr');
+
+        // Debugging: Check if rows are being captured
+        console.log('Number of rows:', tableRows.length);
+
+        // Event listener for the search input
+        searchInput.addEventListener('input', () => {
+            const searchQuery = searchInput.value.toLowerCase();
+            console.log('Search query:', searchQuery);
+
+            tableRows.forEach(row => {
+                const rowText = row.innerText.toLowerCase(); // Use innerText for consistency
+                console.log('Row text:', rowText);
+
+                if (rowText.includes(searchQuery)) {
+                    row.style.display = ''; // Show row
+                } else {
+                    row.style.display = 'none'; // Hide row
+                }
+            });
+        });
+    });
+</script>
+
+</body>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+  <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+>
+
+    
+
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li id="title-name"><a href="/">Sciventory</a></li>
+    </ul>
+    <ul>
+      <li><a href="https://drive.google.com/file/d/1einrizio-tWR6cLVym4cruS_IJGCuvHG/view?usp=sharing" class="secondary nav-button">Chemical Hygiene Plan</a></li>
+      <li class="dropdown">
+        <div class="dropdown-button">
+          Account
+        </div>
+        <ul>
+          <li><a href="/table">View Inventory</a></li>
+          <li><a href="/room-view">View Room Checks</a></li>
+          <li><a href="/admin">Inventory (Admin)</a></li>
+          <li><a href="/room-table">Room Checks (Admin)</a></li>
+          <li><a href="/logout">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  
+    <div class="button-container">
+      <button id="save-table" class="save-add">Save Changes</button>
+      <button id="add-row" class="save-add">Add Row</button>
+    </div>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Chemical</th>
+                <th>Quantity</th>
+                <th>Storage Code</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                <td contenteditable="true">{{ cell }}</td>
+                {% endfor %}
+                <td><button class="delete-row">&times;</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

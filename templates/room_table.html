@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/style.css">
+    
+        <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+      <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+        >
+    </head>
+<body>
+
+  <nav>
+    <ul>
+      <li id="title-name"><a href="/">Sciventory</a></li>
+    </ul>
+    <ul>
+      <li><a href="https://drive.google.com/file/d/1einrizio-tWR6cLVym4cruS_IJGCuvHG/view?usp=sharing" class="secondary nav-button">Chemical Hygiene Plan</a></li>
+      <li class="dropdown">
+        <div class="dropdown-button">
+          Account
+        </div>
+        <ul>
+          <li><a href="/table">View Inventory</a></li>
+          <li><a href="/room-view">View Room Checks</a></li>
+          <li><a href="/admin">Inventory (Admin)</a></li>
+          <li><a href="/room-table">Room Checks (Admin)</a></li>
+          <li><a href="/logout">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+    
+    <!-- Display existing entries -->
+    <table id="room-check-table" border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Room</th>
+                <th>Gas Shutoff</th>
+                <th>Power Shutoff</th>
+                <th>Eye Wash</th>
+                <th>Fire Extinguisher</th>
+                <th>Fire Blanket</th>
+                <th>Chemical PPE</th>
+                <th>Fume Hood</th>
+                <th>Emergency Spill Kits</th>
+                <th>Gas Burners</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in data %}
+            <tr>
+                <td>{{ entry['Date'] }}</td>
+                <td>{{ entry['Room'] }}</td>
+                <td><input type="checkbox" {% if entry['Gas Shutoff'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Power Shutoff'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Eye Wash'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Fire Extinguisher'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Fire Blanket'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Chemical PPE'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Fume Hood'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Emergency Spill Kits'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Gas Burners'] == 'on' %}checked{% endif %} disabled></td>
+                <td>
+                    <form action="/delete" method="POST">
+                        <input type="hidden" name="date" value="{{ entry['Date'] }}">
+                        <input type="hidden" name="room" value="{{ entry['Room'] }}">
+                        <button class="room-delete-button" type="submit">&times;</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="room-form" >
+    <form action="/add" method="POST">
+        <label for="date">Date:</label>
+        <input type="date" name="date" required><br>
+        
+        <label class="room-table-form" for="room">Room:</label>
+        <select name="room" required>
+            <option value="231">231</option>
+            <option value="234">234</option>
+            <option value="229">229</option>
+            <option value="230">230</option>
+            <option value="227">227</option>
+            <option value="219">219</option>
+            <option value="222">222</option>
+            <option value="224">224</option>
+            <option value="213">213</option>
+            <option value="215">215</option>
+        </select><br>
+
+        <div class="checkbox-container">
+            <label><input type="checkbox" name="gas_shutoff"> Gas Shutoff</label>
+            <label><input type="checkbox" name="power_shutoff"> Power Shutoff</label>
+            <label><input type="checkbox" name="eye_wash"> Eye Wash</label>
+            <label><input type="checkbox" name="fire_extinguisher"> Fire Extinguisher</label>
+            <label><input type="checkbox" name="fire_blanket"> Fire Blanket</label>
+            <label><input type="checkbox" name="chemical_ppe"> Chemical PPE</label>
+            <label><input type="checkbox" name="fume_hood"> Fume Hood</label>
+            <label><input type="checkbox" name="spill_kits"> Emergency Spill Kits</label>
+            <label><input type="checkbox" name="gas_burners"> Gas Burners</label>
+        </div>
+
+        <button class="room-table-form" type="submit">Save</button>
+    </form>
+</div>
+
+</body>
+</html>

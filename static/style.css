@@ -1,0 +1,314 @@
+@import url('https://fonts.cdnfonts.com/css/satoshi');
+
+#title-name {
+  margin-left: 50px;
+  font-size: larger;
+  font-weight:  bold;
+  font-family: 'Satoshi', sans-serif;
+  background: -webkit-linear-gradient(#e1eec3, #f05053);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.secondary {
+  margin-right: 50px;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.nav-button {
+background: -webkit-linear-gradient(#3494E6, #EC6EAD);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+font-weight: bold;
+}
+
+nav {
+  font-family: 'Satoshi', sans-serif;
+  margin-right: 100px;
+}
+
+/* Style for the main dropdown container */
+nav .dropdown {
+  position: relative; /* Allows us to position the dropdown menu relative to this container */
+  display: inline-block; /* Aligns it with other inline elements */
+}
+
+/* Style the button (summary) inside the dropdown */
+nav .dropdown .dropdown-button {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  background: -webkit-linear-gradient(#3494E6, #EC6EAD);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border: none;
+  border-radius: 4px; /* Optional: Rounded corners */
+}
+
+/* Dropdown menu itself */
+nav .dropdown ul {
+  position: absolute; /* Positioned relative to the parent dropdown div */
+  top: 100%; /* Position directly beneath the button */
+  left: 0; /* Align with the left edge of the button */
+  background-color: #14171f;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-radius: 4px; /* Optional: Rounded corners */
+  min-width: 200px; /* Adjust width to fit content */
+  display: none; /* Hide by default */
+  z-index: 1000; /* Ensure the dropdown stays on top */
+}
+
+/* Display the dropdown when the container is hovered */
+nav .dropdown:hover ul {
+  display: block;
+}
+
+/* Style individual menu items */
+nav .dropdown ul li {
+  padding: 10px 15px;
+}
+
+nav .dropdown ul li a {
+  text-decoration: none;
+  color: white; /* Set text color */
+  display: block; /* Make the links take up the full width */
+  padding: 8px; /* Optional: Add padding to links */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: hidden; /* Optional: Hide overflow if necessary */
+}
+
+/* Optional: Style the dropdown on hover */
+nav .dropdown ul li a:hover {
+  background: -webkit-linear-gradient(#3494E6, #EC6EAD);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+h1 {
+  font-family: 'Satoshi', sans-serif;
+  text-align: center;
+}
+
+details {
+  font-family: 'Satoshi', sans-serif;
+  width: 50%;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 20px;
+}
+summary {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: bold;
+}
+
+footer {
+  font-family: 'Satoshi', sans-serif;
+  text-align: center;
+  margin-top: 100px;
+  font-weight: bold;
+}
+
+.save-add {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.save-add:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.save-add:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+body {
+	margin: 0;
+  height: 100%;
+  background: #000000;
+  background-size: 100%;
+  font-family: 'Satoshi', sans-serif;
+}
+
+#data-table {
+  border-collapse: collapse;
+	overflow: hidden;
+  width: 90%;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#room-check-table {
+  width: 25%;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#save-table, #add-row {
+    padding: 15px;
+    margin-inline: 100px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-row {
+  align-items: center;
+  border: 0;
+  padding: 0px;
+  line-height: 0px;
+  border-radius: 8px;
+  color: #FFFFFF;
+  display: flex;
+  font-family: 'Satoshi-Variable', sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.room-delete-button {
+  background: transparent !important;
+  color: red; /* Customize the "x" color */
+  font-size: 18px; /* Adjust the size of the "x" */
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  outline: none;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.room-delete-button:hover {
+  color: darkred; /* Optional: Change color on hover */
+}
+
+/* Adjust button size */
+button.room-table-form {
+  padding: 0.4em 1em;
+  font-size: 0.9em;
+  border-radius: 5px;
+  width: auto; /* Prevent stretching to full width */
+}
+
+/* Adjust dropdown size */
+select {
+  padding: 0.4em 0.8em;
+  font-size: 0.9em;
+  border-radius: 5px;
+  width: auto; /* Prevent stretching to full width */
+  max-width: 300px; /* Optional: Limit the maximum width */
+}
+
+/* Override Pico's global form element styles */
+form input[type="date"],
+form select {
+  display: inline-block;
+  width: auto; /* Prevent full-width stretching */
+  font-size: 0.9em;
+  padding: 0.4em 0.8em;
+  border-radius: 5px;
+}
+
+/* Adjust Save Button */
+button.room-table-form {
+  background: var(--primary-color, #111);
+  color: #fff;
+  padding: 0.4em 1em;
+  font-size: 0.9em;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#room-check-table {
+  width: 90%;
+}
+
+#room-check-table input[type="checkbox"] {
+  display: block; 
+  margin: 0 auto; 
+}
+
+#room-form {
+  margin-left: 5%;
+  margin-right: 75%;
+}
