@@ -44,9 +44,11 @@ GHS_CSV_FILE = 'data/ghs_data.csv'
 SDS_LINK_FILE = 'data/sds_link.csv'
 ROOM_CHECK_FILE = 'data/room_check.csv'
 
-admin_access = [i.split(".") for i in os.environ.get("admin_access").split(" ")] 
+admin_access = os.environ.get("admin_access")
+table_access = os.environ.get("table_access")
 
-table_access = [i.split(".") for i in os.environ.get("table_access").split(" ")] 
+admin_access = admin_access.replace(" ", ",").split(",")
+table_access = table_access.replace(" ", ",").split(",")
 
 # Load data from the CSV file
 def load_csv(file):
