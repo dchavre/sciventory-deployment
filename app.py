@@ -12,7 +12,6 @@ import google.auth.transport.requests
 from flask import Flask, render_template, request, jsonify, session, abort, redirect, url_for
 from functools import wraps
 
-
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -45,8 +44,9 @@ GHS_CSV_FILE = 'data/ghs_data.csv'
 SDS_LINK_FILE = 'data/sds_link.csv'
 ROOM_CHECK_FILE = 'data/room_check.csv'
 
-admin_access = json.loads(os.environ.get['admin_access'])
-table_access = json.loads(os.environ.get['table_access'])
+admin_access = [i.split(".") for i in os.environ.get("admin_access").split(" ")] 
+
+table_access = [i.split(".") for i in os.environ.get("table_access").split(" ")] 
 
 # Load data from the CSV file
 def load_csv(file):
