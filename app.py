@@ -26,6 +26,8 @@ from datetime import datetime
 
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('app.secret_key')
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -43,6 +45,9 @@ CSV_FILE = 'data/data.csv'
 GHS_CSV_FILE = 'data/ghs_data.csv'
 SDS_LINK_FILE = 'data/sds_link.csv'
 ROOM_CHECK_FILE = 'data/room_check.csv'
+
+admin_access = os.environ.get('admin_access')
+table_access = os.environ.get('table_access')
 
 # Load data from the CSV file
 def load_csv(file):
