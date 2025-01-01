@@ -138,9 +138,10 @@ def login_is_required_room_admin(f):
     def wrapper_4(*args, **kwargs):
         if 'google_id' not in session:
             return abort(401)
-        if session["gmail"] not in admin_access:
-            return redirect(url_for('home'))  # Or any other non-admin route
-        return f(*args, **kwargs)
+        elif session["gmail"] in admin_access:
+            return f(*args, **kwargs)
+        else:
+            return abort(404, "You do not have access to this page")
     return wrapper_4
 
 # Load GHS data cache
