@@ -23,8 +23,6 @@ import re
 import time
 from datetime import datetime
 
-
-
 app = Flask(__name__)
 app.secret_key = os.environ.get('app.secret_key')
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
@@ -46,8 +44,8 @@ GHS_CSV_FILE = 'data/ghs_data.csv'
 SDS_LINK_FILE = 'data/sds_link.csv'
 ROOM_CHECK_FILE = 'data/room_check.csv'
 
-admin_access = os.environ.get('admin_access')
-table_access = os.environ.get('table_access')
+admin_access = json.loads(os.environ.get['admin_access'])
+table_access = json.loads(os.environ.get['table_access'])
 
 # Load data from the CSV file
 def load_csv(file):
