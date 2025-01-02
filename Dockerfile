@@ -1,5 +1,5 @@
-# Use the Playwright Python image as the base
-FROM mcr.microsoft.com/playwright/python:v1.30.0-focal
+# Use Playwright image with Python 3.9 or later
+FROM mcr.microsoft.com/playwright/python:v1.30.0-jammy
 
 # Set the working directory
 WORKDIR /app
