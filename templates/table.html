@@ -55,7 +55,7 @@
             <td contenteditable="false">
                 {% set chemical_name = row[1] %}
                 {% if chemical_name in sds_links %}
-                    <a href="{{ sds_links[chemical_name][0] }}" target="_blank">
+                    <a href="{{ sds_links[chemical_name] }}" target="_blank">
                         {{ chemical_name }}
                     </a>
                 {% else %}
