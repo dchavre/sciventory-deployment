@@ -24,13 +24,13 @@ import chromedriver_autoinstaller
 
 app = Flask(__name__)
 
+chromedriver_autoinstaller.install()
+
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 client_secrets_file = 'client_secret.json'
 
 os.environ['NO_PROXY'] = 'oauth2.googleapis.com'
-
-chromedriver_autoinstaller.install()
 
 flow = Flow.from_client_secrets_file(
     client_secrets_file=client_secrets_file,
