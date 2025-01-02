@@ -227,7 +227,8 @@ def scrape_info(viewer_url):
         browser.close()
     ghs_matches = re.findall(r'ghs0\d+\.png', page_content)
     sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_content)
-    return ghs_matches, sds_links
+    sds_link = clean_link(sds_links)
+    return ghs_matches, sds_link
     
 def scraper(data, ghs_data, sds_data):
     chemical_names = get_chemical(data)
@@ -253,7 +254,6 @@ def scraper(data, ghs_data, sds_data):
             try:
                 viewer_url = scrape_link(chemical_name)
                 ghs_matches, sds_links = scrape_info(viewer_url)
-                sds_link = clean_link(sds_links)
             except IndexError:
                 print("Link not found")
                 ghs_matches = ['error.png']
