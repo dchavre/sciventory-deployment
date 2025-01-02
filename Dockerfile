@@ -1,40 +1,41 @@
-# Base Environment: Python + Playwright
+# Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Install system dependencies for Playwright
+# Set the working directory in the container
+WORKDIR /app
+
+# Install system dependencies for Playwright and other necessary tools
 RUN apt-get update && apt-get install -y \
+    curl \
     libnss3 \
-    libgconf-2-4 \
-    libx11-dev \
+    libgdk-pixbuf2.0-0 \
+    libatk1.0-0 \
+    libx11-xcb1 \
     libxcomposite1 \
     libxrandr2 \
     libasound2 \
-    libxtst6 \
     libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    fonts-liberation \
-    libappindicator3-1 \
+    libpangocairo-1.0-0 \
+    libgbm1 \
     libnspr4 \
-    libnss3 \
-    lsb-release \
-    xdg-utils \
+    libxshmfence1 \
+    libxtst6 \
+    libappindicator3-1 \
+    libsecret-1-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up a working directory in the container
-WORKDIR /app
+# Install Playwright and other dependencies
+RUN pip install --no-cache-dir playwright
+RUN playwright install --with-deps  # Make sure browsers are installed
 
-# Install Python dependencies and Playwright
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install playwright
-RUN playwright install
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# Copy the rest of the application code
-COPY . /app/
+# Install any dependencies from requirements.txt
+RUN pip install -r requirements.txt
 
-# Expose port 5000 for Flask app
+# Expose port 5000 for the app
 EXPOSE 5000
 
-# Run the Flask app with Gunicorn
+# Start the application using Gunicorn
 CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000"]
