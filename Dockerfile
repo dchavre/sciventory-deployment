@@ -1,16 +1,19 @@
-FROM python:3.11-buster
+# Use the Playwright Python image as the base
 FROM mcr.microsoft.com/playwright/python:v1.30.0-focal
 
+# Set the working directory
 WORKDIR /app
+
+# Copy requirements and install dependencies
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright and necessary browsers
-RUN pip install playwright && playwright install --with-deps
+# Install Playwright browsers
+RUN playwright install --with-deps
 
-# Install your application requirements
+# Copy the application code into the container
 COPY . /app
 
-# Expose port and start the app
+# Expose port and start the Flask application
 EXPOSE 5000
 CMD ["python", "app.py"]
