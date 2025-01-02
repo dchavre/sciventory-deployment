@@ -10,7 +10,6 @@ cachetools==5.5.0
 certifi==2024.12.14
 cffi==1.17.1
 charset-normalizer==3.4.1
-chromedriver-autoinstaller==0.6.4
 click==8.1.8
 cryptography==44.0.0
 cssselect==1.2.0
@@ -33,8 +32,6 @@ ldap3==2.9.1
 lxml==5.3.0
 lxml_html_clean==0.4.1
 MarkupSafe==3.0.2
-mitmproxy-macos==0.10.7
-mitmproxy_rs==0.10.7
 msgpack==1.1.0
 oauthlib==3.2.2
 outcome==1.3.0.post0
@@ -71,6 +68,7 @@ trio-websocket==0.11.1
 typing_extensions==4.12.2
 urllib3==1.26.20
 urwid==2.6.16
+uvicorn==0.34.0
 w3lib==2.2.1
 wcwidth==0.2.13
 webdriver-manager==4.0.2
