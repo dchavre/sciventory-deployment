@@ -253,11 +253,11 @@ def scraper(data, ghs_data, sds_data):
             print(f"Scraping data for: {chemical_name}")
             try:
                 viewer_url = scrape_link(chemical_name)
-                ghs_matches, sds_links = scrape_info(viewer_url)
+                ghs_matches, sds_link = scrape_info(viewer_url)
             except IndexError:
                 print("Link not found")
                 ghs_matches = ['error.png']
-                sds_link = ['']
+                sds_link = ''
                 
             ghs_images[chemical_name] = ghs_matches
             sds_links[chemical_name] = sds_link
