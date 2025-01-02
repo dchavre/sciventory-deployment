@@ -213,11 +213,10 @@ def scrape_link(chemical_name):
     return viewer_url
 
 def clean_link(sds_links):
-    sds_link = sds_links[0]
-    sds_link = re.sub(r'(?i)\bHTTP\b', 'https', sds_link)
-    sds_link = sds_link.replace('&amp;', '&')
-    print(sds_link)
-    return sds_link
+    sds_links[0] = re.sub(r'(?i)\bHTTP\b', 'https', sds_links[0])
+    sds_links[0] = sds_links[0].replace('&amp;', '&')
+    print(sds_links[0])
+    return sds_links[0]
 
 def scrape_info(viewer_url):
     with sync_playwright() as p:
@@ -228,8 +227,7 @@ def scrape_info(viewer_url):
         browser.close()
     ghs_matches = re.findall(r'ghs0\d+\.png', page_content)
     sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_content)
-    sds_link = clean_link(sds_links)
-    return ghs_matches, sds_link
+    return ghs_matches, sds_links
     
 def scraper(data, ghs_data, sds_data):
     chemical_names = get_chemical(data)
@@ -254,7 +252,8 @@ def scraper(data, ghs_data, sds_data):
             print(f"Scraping data for: {chemical_name}")
             try:
                 viewer_url = scrape_link(chemical_name)
-                ghs_matches, sds_link = scrape_info(viewer_url)
+                ghs_matches, sds_links = scrape_info(viewer_url)
+                sds_link = clean_link(sds_links)
             except IndexError:
                 print("Link not found")
                 ghs_matches = ['error.png']
