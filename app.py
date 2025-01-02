@@ -11,15 +11,7 @@ from pip._vendor import cachecontrol
 import google.auth.transport.requests
 from flask import Flask, render_template, request, jsonify, session, abort, redirect, url_for
 from functools import wraps
-
-
-import selenium
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
+from playwright.sync_api import sync_playwright
 
 app = Flask(__name__)
 
@@ -41,14 +33,12 @@ GHS_CSV_FILE = 'data/ghs_data.csv'
 SDS_LINK_FILE = 'data/sds_link.csv'
 ROOM_CHECK_FILE = 'data/room_check.csv'
 
+
 admin_access = os.environ.get("admin_access")
 table_access = os.environ.get("table_access")
 
 admin_access = admin_access.replace(" ", ",").split(",")
 table_access = table_access.replace(" ", ",").split(",")
-
-print(admin_access)
-print(table_access)
 
 app.secret_key = os.environ.get('app.secret_key')
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
@@ -140,13 +130,10 @@ def login_is_required_room_admin(f):
     def wrapper_4(*args, **kwargs):
         if 'google_id' not in session:
             return abort(401)
-        elif session["gmail"] in admin_access:
-            return f(*args, **kwargs)
-        else:
-            return abort(404, "You do not have access to this page")
+        if session["gmail"] not in admin_access:
+            return redirect(url_for('home'))  # Or any other non-admin route
+        return f(*args, **kwargs)
     return wrapper_4
-
-
 
 # Load GHS data cache
 def load_ghs_cache():
@@ -180,6 +167,15 @@ def save_sds_cache(chemical_name, sds_link):
     with open(SDS_LINK_FILE, 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([chemical_name, ",".join(sds_link)])
+
+import requests
+import json
+import re
+
+from playwright.sync_api import sync_playwright
+
+
+chemical_name = 'formaldehyde'
 
 def scrape_link(chemical_name):
     # The URL to send the POST request to
@@ -220,6 +216,8 @@ def scrape_link(chemical_name):
     
     viewer_url = f'https://www.chemicalsafety.com/sds1/sdsviewer.php?id={id}&amp;name={name}' # link to the GHS and SDS information
     
+    print(viewer_url)
+    
     return viewer_url
 
 def clean_link(sds_links):
@@ -227,58 +225,29 @@ def clean_link(sds_links):
     sds_link = re.sub(r'(?i)\bHTTP\b', 'https', sds_link)
     sds_link = sds_link.replace('&amp;', '&')
     print(sds_link)
-    return [sds_link]
-
-def setup_driver():
-    service = Service()
-    # Configure Chrome options
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-
-    # Initialize WebDriver
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-    return driver
+    return sds_link
 
 def scrape_info(viewer_url):
-    driver = setup_driver()
-    driver.get(viewer_url)
-    try:
-        WebDriverWait(driver, 5).until(
-        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'img/ghs0')]"))
-    )
-    except selenium.common.exceptions.TimeoutException:
-        print("No image found")
-        page_html = driver.page_source
-        sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_html)
-        
-        sds_link = clean_link(sds_links)
-        
-        driver.quit()
-        
-        return([], sds_link)
-    
-    print("Chemical details page loaded")
-
-    # Get the HTML content of the page
-    page_html = driver.page_source
-    
-
-    # Extract all instances of "ghs0#.png"
-    ghs_matches = re.findall(r'ghs0\d+\.png', page_html)
-    print(ghs_matches)
-    
-    sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_html)
-    
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(viewer_url, wait_until="networkidle")
+        page_content = page.content()
+        browser.close()
+    ghs_matches = re.findall(r'ghs0\d+\.png', page_content)
+    sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_content)
     sds_link = clean_link(sds_links)
-    print(sds_link)
-    
-    # Close the WebDriver
-    driver.quit()
-    
+    return ghs_matches, [sds_link]
+
+def scraper(chemical_name):
+    viewer_url = scrape_link(chemical_name)
+    ghs_matches, sds_link = scrape_info(viewer_url)
     return ghs_matches, sds_link
 
+ghs_images, sds_links = scraper(chemical_name)
+print(ghs_images)
+print(sds_links)    
+    
 def scraper(data, ghs_data, sds_data):
     chemical_names = get_chemical(data)
     chemical_names_ghs = get_name_ghs_sds(ghs_data)
