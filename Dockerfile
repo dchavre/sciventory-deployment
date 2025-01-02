@@ -10,7 +10,6 @@ RUN pip install playwright && playwright install --with-deps
 
 # Install your application requirements
 COPY . /app
-RUN pip install -r requirements.txt
 
 # Expose port and start the app
 EXPOSE 5000
