@@ -168,14 +168,6 @@ def save_sds_cache(chemical_name, sds_link):
         writer = csv.writer(csvfile)
         writer.writerow([chemical_name, ",".join(sds_link)])
 
-import requests
-import json
-import re
-
-from playwright.sync_api import sync_playwright
-
-
-chemical_name = 'formaldehyde'
 
 def scrape_link(chemical_name):
     # The URL to send the POST request to
@@ -225,7 +217,7 @@ def clean_link(sds_links):
     sds_link = re.sub(r'(?i)\bHTTP\b', 'https', sds_link)
     sds_link = sds_link.replace('&amp;', '&')
     print(sds_link)
-    return sds_link
+    return [sds_link]
 
 def scrape_info(viewer_url):
     with sync_playwright() as p:
@@ -238,15 +230,6 @@ def scrape_info(viewer_url):
     sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_content)
     sds_link = clean_link(sds_links)
     return ghs_matches, [sds_link]
-
-def scraper(chemical_name):
-    viewer_url = scrape_link(chemical_name)
-    ghs_matches, sds_link = scrape_info(viewer_url)
-    return ghs_matches, sds_link
-
-ghs_images, sds_links = scraper(chemical_name)
-print(ghs_images)
-print(sds_links)    
     
 def scraper(data, ghs_data, sds_data):
     chemical_names = get_chemical(data)
@@ -275,7 +258,7 @@ def scraper(data, ghs_data, sds_data):
             except IndexError:
                 print("Link not found")
                 ghs_matches = ['error.png']
-                sds_link = ''
+                sds_link = ['']
                 
             ghs_images[chemical_name] = ghs_matches
             sds_links[chemical_name] = sds_link
@@ -423,4 +406,4 @@ def update():
     return jsonify({"message": "Table updated successfully!"})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000)
