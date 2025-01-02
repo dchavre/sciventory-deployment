@@ -31,7 +31,7 @@ os.environ['NO_PROXY'] = 'oauth2.googleapis.com'
 flow = Flow.from_client_secrets_file(
     client_secrets_file=client_secrets_file,
     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri='http://127.0.0.1:5000/callback'
+    redirect_uri='https://sciventory-hhs.onrender.com/callback'
 )     
             
 
