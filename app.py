@@ -20,11 +20,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import chromedriver_autoinstaller
 
 app = Flask(__name__)
-
-chromedriver_autoinstaller.install()
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
