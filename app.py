@@ -153,7 +153,7 @@ def load_sds_cache():
             reader = csv.reader(csvfile)
             for row in reader:
                 if row:  # Avoid empty rows
-                    sds_cache[row[0]] = row[1].split(",")  # Split image names into a list
+                    sds_cache[row[0]] = row[1]
     return sds_cache
 
 
@@ -217,7 +217,7 @@ def clean_link(sds_links):
     sds_link = re.sub(r'(?i)\bHTTP\b', 'https', sds_link)
     sds_link = sds_link.replace('&amp;', '&')
     print(sds_link)
-    return [sds_link]
+    return sds_link
 
 def scrape_info(viewer_url):
     with sync_playwright() as p:
@@ -229,7 +229,7 @@ def scrape_info(viewer_url):
     ghs_matches = re.findall(r'ghs0\d+\.png', page_content)
     sds_links = re.findall(r'href=["\']([^"\']*sds\.chemicalsafety\.com/sds[^"\']*)["\']', page_content)
     sds_link = clean_link(sds_links)
-    return ghs_matches, [sds_link]
+    return ghs_matches, sds_link
     
 def scraper(data, ghs_data, sds_data):
     chemical_names = get_chemical(data)
