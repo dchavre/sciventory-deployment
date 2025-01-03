@@ -72,11 +72,11 @@
             <!-- Pictograms -->
             <td>
                 {% if chemical_name in ghs_data and ghs_data[chemical_name] %}
-                    {% if ghs_data[chemical_name] %}
-                        {% for pictogram in ghs_data[chemical_name] %}
-                            <img src="static/img/{{ pictogram }}" alt="{{ pictogram }}" style="width:50px; height:50px;">
-                        {% endfor %}
-                    {% endif %}
+                    {% for pictogram in ghs_data[chemical_name] %}
+                        <img src="static/img/{{ pictogram }}" alt="{{ pictogram }}" style="width:50px; height:50px;">
+                    {% endfor %}
+                {% else %}
+                
                 {% endif %}
             </td>
         </tr>
