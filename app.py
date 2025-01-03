@@ -282,25 +282,36 @@ def login():
 
 @app.route('/callback')
 def callback():
+    # Fetch the token from the authorization response
     flow.fetch_token(authorization_response=request.url)
 
-    if not session["state"] == request.args["state"]:
-        abort(500)  # State does not match!
+    # Check if the state parameter from the URL matches the one stored in the session
+    if "state" not in session or session["state"] != request.args.get("state"):
+        # Abort with an error if the state is missing or doesn't match
+        return abort(400, "CSRF verification failed: State mismatch.")
 
+    # Clear the state from the session for security
+    session.pop("state", None)
+
+    # Proceed to fetch the credentials
     credentials = flow.credentials
     request_session = requests.session()
     cached_session = cachecontrol.CacheControl(request_session)
     token_request = google.auth.transport.requests.Request(session=cached_session)
 
+    # Verify the id token to get user details
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token,
         request=token_request,
         audience=GOOGLE_CLIENT_ID
     )
 
+    # Store user information in the session
     session["google_id"] = id_info.get("sub")
     session["name"] = id_info.get("name")
     session["gmail"] = id_info.get("email")
+
+    # Redirect to the table page or desired route after login
     return redirect("/table")
     
 @app.route('/logout')
