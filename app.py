@@ -14,6 +14,8 @@ from pip._vendor import cachecontrol
 from functools import wraps
 from playwright.sync_api import sync_playwright
 
+from datetime import timedelta
+
 app = Flask(__name__)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
@@ -49,6 +51,9 @@ with open(client_secrets_file, 'r') as file:
     
 GOOGLE_CLIENT_ID = secrets['web']['client_id']
 app.secret_key = secrets['web']['client_secret']
+
+app.config['SECRET_KEY'] = app.secret_key
+app.permanent_session_lifetime = timedelta(days=1)
 
 # Load data from the CSV file
 def load_csv(file):
@@ -269,6 +274,9 @@ def scraper(data, ghs_data, sds_data):
     
     return ghs_images, sds_links
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
 @app.route('/')
 def home():
@@ -300,19 +308,23 @@ def callback():
     token_request = google.auth.transport.requests.Request(session=cached_session)
 
     # Verify the id token to get user details
-    id_info = id_token.verify_oauth2_token(
-        id_token=credentials._id_token,
-        request=token_request,
-        audience=GOOGLE_CLIENT_ID
-    )
+    try:
+        id_info = id_token.verify_oauth2_token(
+            id_token=credentials._id_token,
+            request=token_request,
+            audience=GOOGLE_CLIENT_ID
+        )
 
-    # Store user information in the session
-    session["google_id"] = id_info.get("sub")
-    session["name"] = id_info.get("name")
-    session["gmail"] = id_info.get("email")
+        # Store user information in the session
+        session["google_id"] = id_info.get("sub")
+        session["name"] = id_info.get("name")
+        session["gmail"] = id_info.get("email")
 
-    # Redirect to the table page or desired route after login
-    return redirect("/table")
+        # Redirect to the table page or desired route after login
+        return redirect("/table")
+
+    except GoogleAuthError as e:
+        return abort(400, f"Error verifying the ID token: {str(e)}")
     
 @app.route('/logout')
 def logout():
