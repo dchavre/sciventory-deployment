@@ -1,20 +1,13 @@
-import csv
-import os
-import requests
-import json
-import re
-
-from flask import Flask, session, abort, redirect, request, render_template, jsonify, url_for
-
-import google.auth.transport.requests
-from google.oauth2 import id_token
-from google_auth_oauthlib.flow import Flow
-
-from pip._vendor import cachecontrol
-from functools import wraps
-from playwright.sync_api import sync_playwright
-
+from flask import Flask, session, redirect, url_for, request, abort
+from flask_session import Session  # Import Flask-Session
 from datetime import timedelta
+import google.auth.transport.requests
+import google.auth
+from google.oauth2.credentials import Credentials
+import cachecontrol
+from google.auth.transport.requests import Request
+from google.auth.exceptions import GoogleAuthError
+import logging
 
 app = Flask(__name__)
 
@@ -45,6 +38,14 @@ table_access = table_access.replace(" ", ",").split(",")
 
 app.secret_key = os.environ.get('app.secret_key')
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+
+app.config['SECRET_KEY'] = app.secret_key
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.permanent_session_lifetime = timedelta(days=1)
+
+# Initialize the session
+Session(app)
 
 with open(client_secrets_file, 'r') as file:
     secrets = json.load(file)
@@ -282,14 +283,12 @@ def make_session_permanent():
 def home():
     return render_template('home.html')
 
-@app.route('/login')
-def login():
-    authorization_url, state = flow.authorization_url()
-    session["state"] = state
-    return redirect(authorization_url)
-
 @app.route('/callback')
 def callback():
+    # Debug: log the state in session and request args
+    logging.debug(f"Session state: {session.get('state')}")
+    logging.debug(f"Request state: {request.args.get('state')}")
+
     # Fetch the token from the authorization response
     flow.fetch_token(authorization_response=request.url)
 
