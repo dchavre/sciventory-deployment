@@ -4,12 +4,13 @@ import requests
 import json
 import re
 
-from flask import Flask, session, abort, redirect, request
+from flask import Flask, session, abort, redirect, request, render_template, jsonify, url_for
+
+import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
+
 from pip._vendor import cachecontrol
-import google.auth.transport.requests
-from flask import Flask, render_template, request, jsonify, session, abort, redirect, url_for
 from functools import wraps
 from playwright.sync_api import sync_playwright
 
@@ -275,37 +276,32 @@ def home():
 
 @app.route('/login')
 def login():
-    # Generate the authorization URL and state
     authorization_url, state = flow.authorization_url()
-
-    # Store the state in the session
-    session['state'] = state
-
-    # Redirect the user to the authorization URL
+    session["state"] = state
     return redirect(authorization_url)
 
 @app.route('/callback')
 def callback():
-    # Get the state stored in the session to prevent CSRF attacks
-    state = session.get('state')
+    flow.fetch_token(authorization_response=request.url)
 
-    # Make sure the state matches to prevent any CSRF issues
-    if not state or state != request.args.get('state'):
-        return abort(400, "Invalid state parameter")
+    if not session["state"] == request.args["state"]:
+        abort(500)  # State does not match!
 
-    # Fetch the token using the authorization response and state
-    flow.fetch_token(authorization_response=request.url, state=state)
-
-    # Get the credentials
     credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
 
-    # Use the credentials to get user info (for example, email)
-    session['google_id'] = credentials.id_token['sub']
-    session['gmail'] = credentials.id_token['email']
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=GOOGLE_CLIENT_ID
+    )
 
-    # Redirect to a protected route or the home page
-    return redirect(url_for('table'))
-
+    session["google_id"] = id_info.get("sub")
+    session["name"] = id_info.get("name")
+    session["gmail"] = id_info.get("email")
+    return redirect("/table")
     
 @app.route('/logout')
 def logout():
