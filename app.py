@@ -275,58 +275,37 @@ def home():
 
 @app.route('/login')
 def login():
-    # Create a new Flow instance for this user
-    flow = Flow.from_client_secrets_file(
-        client_secrets_file=client_secrets_file,
-        scopes=[
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-            "openid"
-        ],
-        redirect_uri='https://sciventory-hhs.onrender.com/callback'
-    )
-    # Save the flow state in the session
-    session['state'] = flow.state
+    # Generate the authorization URL and state
+    authorization_url, state = flow.authorization_url()
 
-    # Generate the authorization URL
-    authorization_url, _ = flow.authorization_url(prompt='consent')
+    # Store the state in the session
+    session['state'] = state
+
+    # Redirect the user to the authorization URL
     return redirect(authorization_url)
 
 @app.route('/callback')
 def callback():
-    # Recreate the Flow instance using the state from the session
+    # Get the state stored in the session to prevent CSRF attacks
     state = session.get('state')
-    if not state:
-        return "Session expired. Please try again.", 400
 
-    flow = Flow.from_client_secrets_file(
-        client_secrets_file=client_secrets_file,
-        scopes=[
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-            "openid"
-        ],
-        state=state
-    )
-    flow.redirect_uri = 'https://sciventory-hhs.onrender.com/callback'
+    # Make sure the state matches to prevent any CSRF issues
+    if not state or state != request.args.get('state'):
+        return abort(400, "Invalid state parameter")
 
-    # Fetch the token using the authorization code
-    authorization_response = request.url
-    flow.fetch_token(authorization_response=authorization_response)
+    # Fetch the token using the authorization response and state
+    flow.fetch_token(authorization_response=request.url, state=state)
 
-    # Get user info (optional)
+    # Get the credentials
     credentials = flow.credentials
-    user_info = requests.get(
-        'https://openidconnect.googleapis.com/v1/userinfo',
-        headers={'Authorization': f'Bearer {credentials.token}'}
-    ).json()
 
-    # Store user info in session
-    session['google_id'] = user_info['sub']
-    session['gmail'] = user_info['email']
+    # Use the credentials to get user info (for example, email)
+    session['google_id'] = credentials.id_token['sub']
+    session['gmail'] = credentials.id_token['email']
 
-    # Redirect to the home page or the page after successful login
+    # Redirect to a protected route or the home page
     return redirect(url_for('table'))
+
     
 @app.route('/logout')
 def logout():
