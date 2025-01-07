@@ -217,7 +217,7 @@ def clean_link(sds_links):
     sds_links[0] = re.sub(r'(?i)\bHTTP\b', 'https', sds_links[0])
     sds_links[0] = sds_links[0].replace('&amp;', '&')
     print(sds_links[0])
-    return sds_links[0]
+    return [sds_links[0]]
 
 def scrape_info(viewer_url):
     with sync_playwright() as p:
@@ -319,6 +319,13 @@ def table():
     print("GHS Data:", ghs_data)
     print("SDS Link:", sds_links)
     return render_template('table.html', data=data, ghs_data=ghs_data, sds_links=sds_links)
+
+@app.route('/download/raw-csv')
+def download_file(filename):
+    try:
+        return send_from_directory(CSV_FILE, filename, as_attachment=True)
+    except FileNotFoundError:
+        return "File not found!", 404
 
 @app.route('/room-table')
 @login_is_required_room_admin
