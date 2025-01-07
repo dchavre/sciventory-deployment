@@ -210,7 +210,7 @@ body {
   margin-right: auto;
 }
 
-#save-table, #add-row {
+#save-table, #add-row, #download-raw {
     padding: 15px;
     margin-inline: 100px;
     font-weight: bold;
