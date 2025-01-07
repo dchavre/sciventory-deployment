@@ -324,7 +324,7 @@ def table():
 def download_file():
     try:
         filename = "data.csv" 
-        return send_from_directory(CSV_FILE, filename, as_attachment=True)
+        return send_from_directory("data/", filename, as_attachment=True)
     except FileNotFoundError:
         return "File not found!", 404
 
