@@ -321,8 +321,9 @@ def table():
     return render_template('table.html', data=data, ghs_data=ghs_data, sds_links=sds_links)
 
 @app.route('/download/raw-csv')
-def download_file(filename):
+def download_file():
     try:
+        filename = "data.csv" 
         return send_from_directory(CSV_FILE, filename, as_attachment=True)
     except FileNotFoundError:
         return "File not found!", 404
