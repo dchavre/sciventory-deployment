@@ -211,7 +211,7 @@ body {
   margin-right: auto;
 }
 
-#save-table, #add-row, #download-raw {
+#save-table, #add-row, #download-raw, #download-ghs, #download-sds, #download-room {
     padding: 15px;
     margin-inline: 100px;
     font-weight: bold;
