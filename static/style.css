@@ -218,6 +218,11 @@ body {
     font-size: 15px;
 }
 
+#download-room {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .button-container {
     display: flex;
     justify-content: center;
