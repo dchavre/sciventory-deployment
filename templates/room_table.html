@@ -57,15 +57,15 @@
             <tr>
                 <td>{{ entry['Date'] }}</td>
                 <td>{{ entry['Room'] }}</td>
-                <td><input type="checkbox" {% if entry['Gas Shutoff'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Power Shutoff'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Eye Wash'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Fire Extinguisher'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Fire Blanket'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Chemical PPE'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Fume Hood'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Emergency Spill Kits'] == 'on' %}checked{% endif %} disabled></td>
-                <td><input type="checkbox" {% if entry['Gas Burners'] == 'on' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Gas Shutoff'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Power Shutoff'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Eye Wash'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Fire Extinguisher'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Fire Blanket'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Chemical PPE'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Fume Hood'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Emergency Spill Kits'] == 'yes' %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if entry['Gas Burners'] == 'yes' %}checked{% endif %} disabled></td>
                 <td>
                     <form action="/delete" method="POST">
                         <input type="hidden" name="date" value="{{ entry['Date'] }}">
