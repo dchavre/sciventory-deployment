@@ -213,7 +213,7 @@ body {
 
 #save-table, #add-row, #download-raw, #download-ghs, #download-sds, #download-room {
     padding: 15px;
-    margin-inline: 100px;
+    margin-inline: 15px;
     font-weight: bold;
     font-size: 15px;
 }
