@@ -321,9 +321,33 @@ def table():
     return render_template('table.html', data=data, ghs_data=ghs_data, sds_links=sds_links)
 
 @app.route('/download/raw-csv')
-def download_file():
+def download_raw():
     try:
         filename = "data.csv" 
+        return send_from_directory("data/", filename, as_attachment=True)
+    except FileNotFoundError:
+        return "File not found!", 404
+
+@app.route('/download/ghs-csv')
+def download_ghs():
+    try:
+        filename = "ghs_data.csv" 
+        return send_from_directory("data/", filename, as_attachment=True)
+    except FileNotFoundError:
+        return "File not found!", 404
+
+@app.route('/download/sds-csv')
+def download_sds():
+    try:
+        filename = "sds_link.csv" 
+        return send_from_directory("data/", filename, as_attachment=True)
+    except FileNotFoundError:
+        return "File not found!", 404
+
+@app.route('/download/room-csv')
+def download_room():
+    try:
+        filename = "room_check.csv" 
         return send_from_directory("data/", filename, as_attachment=True)
     except FileNotFoundError:
         return "File not found!", 404
