@@ -374,15 +374,15 @@ def add_entry():
     
     # Capture checkbox values (they are sent as 'on' if checked)
     equipment_checks = {
-        'Gas Shutoff': 'on' if request.form.get('gas_shutoff') else '',
-        'Power Shutoff': 'on' if request.form.get('power_shutoff') else '',
-        'Eye Wash': 'on' if request.form.get('eye_wash') else '',
-        'Fire Extinguisher': 'on' if request.form.get('fire_extinguisher') else '',
-        'Fire Blanket': 'on' if request.form.get('fire_blanket') else '',
-        'Chemical PPE': 'on' if request.form.get('chemical_ppe') else '',
-        'Fume Hood': 'on' if request.form.get('fume_hood') else '',
-        'Emergency Spill Kits': 'on' if request.form.get('spill_kits') else '',
-        'Gas Burners': 'on' if request.form.get('gas_burners') else '',
+        'Gas Shutoff': 'yes' if request.form.get('gas_shutoff') else '',
+        'Power Shutoff': 'yes' if request.form.get('power_shutoff') else '',
+        'Eye Wash': 'yes' if request.form.get('eye_wash') else '',
+        'Fire Extinguisher': 'yes' if request.form.get('fire_extinguisher') else '',
+        'Fire Blanket': 'yes' if request.form.get('fire_blanket') else '',
+        'Chemical PPE': 'yes' if request.form.get('chemical_ppe') else '',
+        'Fume Hood': 'yes' if request.form.get('fume_hood') else '',
+        'Emergency Spill Kits': 'yes' if request.form.get('spill_kits') else '',
+        'Gas Burners': 'yes' if request.form.get('gas_burners') else '',
     }
     
     # Debugging: print the equipment checks to verify checkbox values
