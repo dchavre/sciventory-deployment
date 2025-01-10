@@ -96,45 +96,49 @@ def get_chemical(data):
 def get_name_ghs_sds(data):
     return [row[0] for row in data]
 
-def login_is_required_table(function):
-    def wrapper_1(*args, **kwargs):
+def login_is_required_table(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
         if 'google_id' not in session:
-            return abort(401)
-        elif session["gmail"] in table_access or session["gmail"] in admin_access:
-            return function()
-        else:
-            return abort(404, "You do not have access to this page")
-    return wrapper_1
+            return abort(401, "Unauthorized: Please log in to access this page.")
+        user_email = session.get("gmail")
+        if user_email in table_access or user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: You do not have permission to access this table.")
+    return wrapper
 
-def login_is_required_admin(function):
-    def wrapper_2(*args, **kwargs):
+def login_is_required_admin(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
         if 'google_id' not in session:
-            return abort(401)
-        elif session["gmail"] in admin_access:
-            return function()
-        else:
-            return abort(404, "You do not have access to this page")
-    return wrapper_2
+            return abort(401, "Unauthorized: Please log in to access admin features.")
+        user_email = session.get("gmail")
+        if user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: Admin access is required to view this page.")
+    return wrapper
 
-def login_is_required_room_view(function):
-    def wrapper_3(*args, **kwargs):
+def login_is_required_room_view(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
         if 'google_id' not in session:
-            return abort(401)
-        elif session["gmail"] in table_access or session["gmail"] in admin_access:
-            return function()
-        else:
-            return abort(404, "You do not have access to this page")
-    return wrapper_3
+            return abort(401, "Unauthorized: Please log in to access this page.")
+        user_email = session.get("gmail")
+        if user_email in table_access or user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: You do not have permission to view this page.")
+    return wrapper
 
 def login_is_required_room_admin(f):
     @wraps(f)
-    def wrapper_4(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         if 'google_id' not in session:
-            return abort(401)
-        if session["gmail"] not in admin_access:
-            return redirect(url_for('home'))  # Or any other non-admin route
-        return f(*args, **kwargs)
-    return wrapper_4
+            return abort(401, "Unauthorized: Please log in to access admin features.")
+        user_email = session.get("gmail")
+        if user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: Admin access is required for this action.")
+    return wrapper
 
 # Load GHS data cache
 def load_ghs_cache():
