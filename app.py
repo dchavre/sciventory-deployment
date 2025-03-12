@@ -78,6 +78,12 @@ def load_data():
 
 # Save data to the CSV file
 def save_csv(data):
+    if request.path == 'admin-hhs':
+        CSV_FILE = HHS_CSV_FILE
+    elif request.path == 'admin-wms':
+        CSV_FILE = WMS_CSV_FILE
+    elif request.path == 'admin-art':
+        CSV_FILE = ART_CSV_FILE
     with open(CSV_FILE, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(data)
@@ -368,7 +374,7 @@ def callback():
     session["google_id"] = id_info.get("sub")
     session["name"] = id_info.get("name")
     session["gmail"] = id_info.get("email")
-    return redirect("/table")
+    return redirect("/table-hhs")
     
 @app.route('/logout')
 def logout():
