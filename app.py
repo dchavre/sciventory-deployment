@@ -377,7 +377,7 @@ def logout():
 
 @app.route('/table-hhs')
 @login_is_required_table_hhs
-def table():
+def table_hhs():
     data = load_csv(HHS_CSV_FILE)
     ghs = load_csv(GHS_CSV_FILE)
     sds = load_csv(SDS_LINK_FILE)
@@ -389,7 +389,7 @@ def table():
 
 @app.route('/table-wms')
 @login_is_required_table_wms
-def table():
+def table_wms():
     data = load_csv(WMS_CSV_FILE)
     ghs = load_csv(GHS_CSV_FILE)
     sds = load_csv(SDS_LINK_FILE)
@@ -401,7 +401,7 @@ def table():
 
 @app.route('/table-art')
 @login_is_required_table_art
-def table():
+def table_art():
     data = load_csv(ART_CSV_FILE)
     ghs = load_csv(GHS_CSV_FILE)
     sds = load_csv(SDS_LINK_FILE)
@@ -518,19 +518,19 @@ def delete_entry():
 
 @app.route('/admin-hhs')
 @login_is_required_admin_hhs
-def admin():
+def admin_hhs():
     data = load_csv(HHS_CSV_FILE)
     return render_template('admin.html', data=data)
 
 @app.route('/admin-wms')
 @login_is_required_admin_hhs
-def admin():
+def admin_wms():
     data = load_csv(WMS_CSV_FILE)
     return render_template('admin.html', data=data)
 
 @app.route('/admin-art')
 @login_is_required_admin_hhs
-def admin():
+def admin_art():
     data = load_csv(ART_CSV_FILE)
     return render_template('admin.html', data=data)
 
