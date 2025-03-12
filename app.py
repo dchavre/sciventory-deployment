@@ -29,9 +29,13 @@ flow = Flow.from_client_secrets_file(
 )     
             
 
-CSV_FILE = 'data/data.csv'
+HHS_CSV_FILE = 'data/hhs_data.csv'
+WMS_CSV_FILE = 'data/wms_data.csv'
+ART_CSV_FILE = 'data/art_data.csv'
+
 GHS_CSV_FILE = 'data/ghs_data.csv'
 SDS_LINK_FILE = 'data/sds_link.csv'
+
 ROOM_CHECK_FILE = 'data/room_check.csv'
 
 
@@ -96,7 +100,7 @@ def get_chemical(data):
 def get_name_ghs_sds(data):
     return [row[0] for row in data]
 
-def login_is_required_table(f):
+def login_is_required_table_hhs(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if 'google_id' not in session:
@@ -107,7 +111,51 @@ def login_is_required_table(f):
         return abort(403, "Forbidden: You do not have permission to access this table.")
     return wrapper
 
-def login_is_required_admin(f):
+def login_is_required_table_wms(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'google_id' not in session:
+            return abort(401, "Unauthorized: Please log in to access this page.")
+        user_email = session.get("gmail")
+        if user_email in table_access or user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: You do not have permission to access this table.")
+    return wrapper
+
+def login_is_required_table_art(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'google_id' not in session:
+            return abort(401, "Unauthorized: Please log in to access this page.")
+        user_email = session.get("gmail")
+        if user_email in table_access or user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: You do not have permission to access this table.")
+    return wrapper
+
+def login_is_required_admin_hhs(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'google_id' not in session:
+            return abort(401, "Unauthorized: Please log in to access admin features.")
+        user_email = session.get("gmail")
+        if user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: Admin access is required to view this page.")
+    return wrapper
+
+def login_is_required_admin_wms(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'google_id' not in session:
+            return abort(401, "Unauthorized: Please log in to access admin features.")
+        user_email = session.get("gmail")
+        if user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: Admin access is required to view this page.")
+    return wrapper
+
+def login_is_required_admin_art(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if 'google_id' not in session:
@@ -140,6 +188,19 @@ def login_is_required_room_admin(f):
         return abort(403, "Forbidden: Admin access is required for this action.")
     return wrapper
 
+def login_is_required_table(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'google_id' not in session:
+            return abort(401, "Unauthorized: Please log in to access this page.")
+        user_email = session.get("gmail")
+        if user_email in table_access or user_email in admin_access:
+            return f(*args, **kwargs)
+        return abort(403, "Forbidden: You do not have permission to access this table.")
+    return wrapper
+
+
+
 # Load GHS data cache
 def load_ghs_cache():
     ghs_cache = {}
@@ -161,7 +222,6 @@ def load_sds_cache():
                     sds_cache[row[0]] = row[1]
     return sds_cache
 
-
 # Save new GHS data to the cache
 def save_ghs_cache(chemical_name, ghs_images):
     with open(GHS_CSV_FILE, 'a', newline='') as csvfile:
@@ -172,6 +232,9 @@ def save_sds_cache(chemical_name, sds_link):
     with open(SDS_LINK_FILE, 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([chemical_name, ",".join(sds_link)])
+        
+
+
 
 
 def scrape_link(chemical_name):
@@ -312,10 +375,34 @@ def logout():
     session.clear()
     return redirect('/')
 
-@app.route('/table')
-@login_is_required_table
+@app.route('/table-hhs')
+@login_is_required_table_hhs
 def table():
-    data = load_csv(CSV_FILE)
+    data = load_csv(HHS_CSV_FILE)
+    ghs = load_csv(GHS_CSV_FILE)
+    sds = load_csv(SDS_LINK_FILE)
+    
+    ghs_data, sds_links = scraper(data, ghs, sds)
+    print("GHS Data:", ghs_data)
+    print("SDS Link:", sds_links)
+    return render_template('table.html', data=data, ghs_data=ghs_data, sds_links=sds_links)
+
+@app.route('/table-wms')
+@login_is_required_table_wms
+def table():
+    data = load_csv(WMS_CSV_FILE)
+    ghs = load_csv(GHS_CSV_FILE)
+    sds = load_csv(SDS_LINK_FILE)
+
+    ghs_data, sds_links = scraper(data, ghs, sds)
+    print("GHS Data:", ghs_data)
+    print("SDS Link:", sds_links)
+    return render_template('table.html', data=data, ghs_data=ghs_data, sds_links=sds_links)
+
+@app.route('/table-art')
+@login_is_required_table_art
+def table():
+    data = load_csv(ART_CSV_FILE)
     ghs = load_csv(GHS_CSV_FILE)
     sds = load_csv(SDS_LINK_FILE)
     
@@ -327,8 +414,8 @@ def table():
 @app.route('/download/raw-csv')
 def download_raw():
     try:
-        filename = "data.csv" 
-        return send_from_directory("data/", filename, as_attachment=True)
+        filename = ["hhs_data.csv", "wms_data.csv", "art_data.csv"]
+        return send_from_directory("data/", filename[0], as_attachment=True), send_from_directory("data/", filename[1], as_attachment=True),  send_from_directory("data/", filename[2], as_attachment=True)
     except FileNotFoundError:
         return "File not found!", 404
 
@@ -429,10 +516,22 @@ def delete_entry():
     return redirect(url_for('room_table'))
 
 
-@app.route('/admin')
-@login_is_required_admin
+@app.route('/admin-hhs')
+@login_is_required_admin_hhs
 def admin():
-    data = load_csv(CSV_FILE)
+    data = load_csv(HHS_CSV_FILE)
+    return render_template('admin.html', data=data)
+
+@app.route('/admin-wms')
+@login_is_required_admin_hhs
+def admin():
+    data = load_csv(WMS_CSV_FILE)
+    return render_template('admin.html', data=data)
+
+@app.route('/admin-art')
+@login_is_required_admin_hhs
+def admin():
+    data = load_csv(ART_CSV_FILE)
     return render_template('admin.html', data=data)
 
 @app.route('/update', methods=['POST'])

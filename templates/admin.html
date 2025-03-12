@@ -22,15 +22,55 @@
     </ul>
     <ul>
       <li><a href="https://drive.google.com/file/d/1einrizio-tWR6cLVym4cruS_IJGCuvHG/view?usp=sharing" class="secondary nav-button">Chemical Hygiene Plan</a></li>
+      
+      
+      <li class="dropdown">
+        <div class="dropdown-button">
+            WMS
+        </div>
+        <ul>
+            <li><a href="/table-wms">Inventory</a></li>
+        </ul>
+        <ul>
+            <li><a href="/admin-wms">Inventory (Admin)</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <div class="dropdown-button">
+            HHS
+        </div>
+        <ul>
+          <li><a href="/table-hhs">Inventory</a></li>
+        </ul>
+        <ul>
+            <li><a href="/room-view">Room Checks<</a></li>
+        </ul>
+        <ul>
+            <li><a href="/admin-hhs">Inventory (Admin)</a></li>
+        </ul>
+        <ul>
+            <li><a href="/room-table">Room Checks (Admin)</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <div class="dropdown-button">
+          Art
+        </div>
+        <ul>
+            <li><a href="/table-art">Inventory</a></li>
+        </ul>
+        <ul>
+            <li><a href="/admin-art">Inventory (Admin)</a></li>
+        </ul>
+      </li>
+
       <li class="dropdown">
         <div class="dropdown-button">
           Account
         </div>
         <ul>
-          <li><a href="/table">View Inventory</a></li>
-          <li><a href="/room-view">View Room Checks</a></li>
-          <li><a href="/admin">Inventory (Admin)</a></li>
-          <li><a href="/room-table">Room Checks (Admin)</a></li>
           <li><a href="/logout">Sign Out</a></li>
         </ul>
       </li>
@@ -67,7 +107,6 @@
                 {% for cell in row %}
                 <td contenteditable="true">{{ cell }}</td>
                 {% endfor %}
-                <td><button class="more-info">+</button></td>
                 <td><button class="delete-row">&times;</button></td>
             </tr>
             {% endfor %}
