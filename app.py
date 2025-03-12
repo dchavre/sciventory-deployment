@@ -78,12 +78,14 @@ def load_data():
 
 # Save data to the CSV file
 def save_csv(data):
-    if request.path == 'admin-hhs':
+    if request.path == '/admin-hhs':
         CSV_FILE = HHS_CSV_FILE
-    elif request.path == 'admin-wms':
+    elif request.path == '/admin-wms':
         CSV_FILE = WMS_CSV_FILE
-    elif request.path == 'admin-art':
+    elif request.path == '/admin-art':
         CSV_FILE = ART_CSV_FILE
+    else:
+        return abort(404, "Invalid request path.")
     with open(CSV_FILE, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(data)
