@@ -38,6 +38,8 @@ SDS_LINK_FILE = 'data/sds_link.csv'
 
 ROOM_CHECK_FILE = 'data/room_check.csv'
 
+global CSV_FILE
+
 
 admin_access = os.environ.get("admin_access")
 table_access = os.environ.get("table_access")
@@ -77,15 +79,7 @@ def load_data():
         return [row for row in reader]
 
 # Save data to the CSV file
-def save_csv(data):
-    if request.path == '/admin-hhs':
-        CSV_FILE = HHS_CSV_FILE
-    elif request.path == '/admin-wms':
-        CSV_FILE = WMS_CSV_FILE
-    elif request.path == '/admin-art':
-        CSV_FILE = ART_CSV_FILE
-    else:
-        return abort(404, "Invalid request path.")
+def save_csv(data, CSV_FILE):
     with open(CSV_FILE, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(data)
@@ -523,29 +517,31 @@ def delete_entry():
 
     return redirect(url_for('room_table'))
 
-
 @app.route('/admin-hhs')
 @login_is_required_admin_hhs
 def admin_hhs():
+    session['CSV_FILE'] = HHS_CSV_FILE
     data = load_csv(HHS_CSV_FILE)
     return render_template('admin.html', data=data)
 
 @app.route('/admin-wms')
 @login_is_required_admin_hhs
 def admin_wms():
+    session['CSV_FILE'] = WMS_CSV_FILE
     data = load_csv(WMS_CSV_FILE)
     return render_template('admin.html', data=data)
 
 @app.route('/admin-art')
 @login_is_required_admin_hhs
 def admin_art():
+    session['CSV_FILE'] = ART_CSV_FILE
     data = load_csv(ART_CSV_FILE)
     return render_template('admin.html', data=data)
 
 @app.route('/update', methods=['POST'])
 def update():
     updated_data = request.json['data']
-    save_csv(updated_data)
+    save_csv(updated_data, session['CSV_FILE'])
     return jsonify({"message": "Table updated successfully!"})
 
 if __name__ == '__main__':
