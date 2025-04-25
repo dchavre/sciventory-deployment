@@ -416,10 +416,21 @@ def table_art():
 @app.route('/download/raw-csv')
 def download_raw():
     try:
-        filename = ["hhs_data.csv", "wms_data.csv", "art_data.csv"]
-        return send_from_directory("data/", filename[0], as_attachment=True), send_from_directory("data/", filename[1], as_attachment=True),  send_from_directory("data/", filename[2], as_attachment=True)
+        # Create in-memory zip
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, 'w') as zf:
+            for fname in ["hhs_data.csv", "wms_data.csv", "art_data.csv"]:
+                zf.write(f"data/{fname}", arcname=fname)
+        memory_file.seek(0)
+
+        return send_file(
+            memory_file,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name='raw_data.zip'
+        )
     except FileNotFoundError:
-        return "File not found!", 404
+        return "One or more files not found!", 404
 
 @app.route('/download/ghs-csv')
 def download_ghs():
