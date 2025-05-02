@@ -461,7 +461,7 @@ iron metal,
 nickel(II) nitrate,"ghs03.png,ghs05.png,ghs07.png,ghs08.png,ghs09.png"
 copper(II) nitrate,"ghs03.png,ghs07.png"
 butane,"ghs02.png,ghs04.png"
-propane isobutane butane canister,error.png
+propane isobutane butane canister,ghs02.png,ghs04.png
 xylene,"ghs02.png,ghs07.png"
 1-propanol,"ghs02.png,ghs05.png,ghs07.png"
 copper(II) oxide,"ghs07.png,ghs08.png,ghs09.png"
